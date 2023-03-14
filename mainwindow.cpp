@@ -68,6 +68,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	manualUpdate();
 	imageviewerContrast->enableRightClick();
+
+	BoundingBox b1(Vec2i(10,10));
+	BoundingBox b2(Vec2i(0,10));
+	BoundingBox b3(Vec2i(10,0));
+	BoundingBox b4(Vec2i(10,20));
+	BoundingBox b5(Vec2i(20,10));
+
+	std::cout << "b1b2: " << b1.getDistance(b2) << " / b1b3: " << b1.getDistance(b3) << " / b1b4: " << b1.getDistance(b4) << " / b1b5: " << b1.getDistance(b5) << std::endl;
 }
 
 MainWindow::~MainWindow()

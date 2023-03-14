@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <crackdetection/islands.h>
+#include <boundingbox.h>
 
 
 namespace Ui {
