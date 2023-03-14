@@ -60,6 +60,7 @@ private:
 	float saved_contrast_hsv_substractor_divisor = 0;
 	float saved_preprocessing_treshold_divisor = 30;
 	float saved_preprocessing_treshold_adder = 0;
+	std::vector<BoundingBox> boxes;
 
 signals:
 	void triggerAutomaticUpdate();

@@ -61,7 +61,7 @@ void BoundingBox::draw(Mat &image) const
 	Point ll(lowerLeftCorner[1],lowerLeftCorner[0]); //lower left
 	Point ul(upperRightCorner[1],lowerLeftCorner[0]); //lower right
 	Point ur(upperRightCorner[1],upperRightCorner[0]); // upper right
-	Point lr(lowerLeftCorner[1],lowerLeftCorner[0]); //lower right
+	Point lr(lowerLeftCorner[1],upperRightCorner[0]); //lower right
 	int thickness = 1;
 
 	//draw the box with 4 lines
@@ -85,7 +85,9 @@ bool BoundingBox::isInsideX(const BoundingBox &other) const
 
 bool BoundingBox::contains(const BoundingBox &other) const
 {
-	return isInsideX(other) && isInsideY(other);
+	const bool is_inside_x = isInsideX(other);
+	const bool is_inside_y = isInsideY(other);
+	return is_inside_x && is_inside_y;
 }
 
 float BoundingBox::getDistance(const BoundingBox &other) const
@@ -95,7 +97,7 @@ float BoundingBox::getDistance(const BoundingBox &other) const
 		return 0;
 	}
 
-	if(this->isInsideY(other) && other.isInsideY(*this) )
+	if(this->isInsideY(other) || other.isInsideY(*this) )
 	{
 		/*   y1
 		 *		<--------> distance x
@@ -106,7 +108,7 @@ float BoundingBox::getDistance(const BoundingBox &other) const
 		return getMinimumXDistance(other);
 	}
 
-	if(this->isInsideX(other) && other.isInsideY(*this) )
+	if(this->isInsideX(other) || other.isInsideX(*this) )
 	{
 		/*		distance y
 		 *		|
@@ -120,7 +122,7 @@ float BoundingBox::getDistance(const BoundingBox &other) const
 	const Vec2i ll(lowerLeftCorner[1],lowerLeftCorner[0]); //lower left
 	const Vec2i ul(upperRightCorner[1],lowerLeftCorner[0]); //lower right
 	const Vec2i ur(upperRightCorner[1],upperRightCorner[0]); // upper right
-	const Vec2i lr(lowerLeftCorner[1],lowerLeftCorner[0]); //lower right
+	const Vec2i lr(lowerLeftCorner[1],upperRightCorner[0]); //lower right
 
 	const float d1 = getMinimalDistanceToAllCorners(ll);
 	const float d2 = getMinimalDistanceToAllCorners(ul);
@@ -151,7 +153,7 @@ float BoundingBox::getMinimalDistanceToAllCorners(Vec2i point) const
 	const Vec2i ll(lowerLeftCorner[1],lowerLeftCorner[0]); //lower left
 	const Vec2i ul(upperRightCorner[1],lowerLeftCorner[0]); //lower right
 	const Vec2i ur(upperRightCorner[1],upperRightCorner[0]); // upper right
-	const Vec2i lr(lowerLeftCorner[1],lowerLeftCorner[0]); //lower right
+	const Vec2i lr(lowerLeftCorner[1],upperRightCorner[0]); //lower right
 
 	const float d1 = distance(ll,point);
 	const float d2 = distance(ul,point);

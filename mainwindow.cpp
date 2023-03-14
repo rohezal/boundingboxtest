@@ -66,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->labelContrastDivisor->setToolTip("High values lowers the amount of constract increase, contrast_improved_value = pixel_value * sqrt(pixel_value) / contrast_divisor.");
 
-	manualUpdate();
+
 	imageviewerContrast->enableRightClick();
 
 	BoundingBox b1(Vec2i(10,10));
@@ -76,6 +76,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	BoundingBox b5(Vec2i(20,10));
 
 	std::cout << "b1b2: " << b1.getDistance(b2) << " / b1b3: " << b1.getDistance(b3) << " / b1b4: " << b1.getDistance(b4) << " / b1b5: " << b1.getDistance(b5) << std::endl;
+
+	boxes.push_back(b1);
+	boxes.push_back(b2);
+	boxes.push_back(b3);
+	boxes.push_back(b4);
+	boxes.push_back(b5);
+
+	manualUpdate();
 }
 
 MainWindow::~MainWindow()
@@ -180,7 +188,12 @@ void MainWindow::manualUpdate()
 	waitKey(0); // Wait for any keystroke in the window
 	*/
 
-	combinedImage = combinedImage*2 + inputImage/10;
+	combinedImage = 0;
+
+	for(int i = 0; i < boxes.size(); i++)
+	{
+		boxes[i].draw(combinedImage);
+	}
 
 
 	imageviewerContrast->setPixMap(QPixmap::fromImage(QImage((unsigned char*) contrastImageFilled.data, contrastImageFilled.cols, contrastImageFilled.rows, QImage::Format_RGB888)));
