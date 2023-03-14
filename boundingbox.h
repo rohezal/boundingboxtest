@@ -41,8 +41,7 @@ public:
 	}
 	inline bool isInBetweenY(const int y) const
 	{
-		//0 is top left corner. 100 is lower than 10
-		return y <= lowerLeftCorner[0] && y >= upperRightCorner[0];
+		return y >= lowerLeftCorner[0] && y <= upperRightCorner[0];
 	}
 	bool contains(const BoundingBox& other) const;
 

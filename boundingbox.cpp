@@ -80,7 +80,7 @@ bool BoundingBox::isInsideY(const BoundingBox &other) const
 
 bool BoundingBox::isInsideX(const BoundingBox &other) const
 {
-	return isInBetweenX(other.lowerLeftCorner[1]) || isInBetweenY(other.upperRightCorner[1]);
+	return isInBetweenX(other.lowerLeftCorner[1]) || isInBetweenX(other.upperRightCorner[1]);
 }
 
 bool BoundingBox::contains(const BoundingBox &other) const
@@ -124,10 +124,10 @@ float BoundingBox::getDistance(const BoundingBox &other) const
 	const Vec2i ur(upperRightCorner[1],upperRightCorner[0]); // upper right
 	const Vec2i lr(lowerLeftCorner[1],upperRightCorner[0]); //lower right
 
-	const float d1 = getMinimalDistanceToAllCorners(ll);
-	const float d2 = getMinimalDistanceToAllCorners(ul);
-	const float d3 = getMinimalDistanceToAllCorners(ur);
-	const float d4 = getMinimalDistanceToAllCorners(lr);
+	const float d1 = other.getMinimalDistanceToAllCorners(ll);
+	const float d2 = other.getMinimalDistanceToAllCorners(ul);
+	const float d3 = other.getMinimalDistanceToAllCorners(ur);
+	const float d4 = other.getMinimalDistanceToAllCorners(lr);
 
 	return std::min( std::min( std::min(d1,d2), d3), d4);
 }
@@ -165,5 +165,5 @@ float BoundingBox::getMinimalDistanceToAllCorners(Vec2i point) const
 
 float BoundingBox::distance(Vec2i one, Vec2i two)
 {
-	return std::sqrt((one[0]-two[0])*(one[0]-two[0]) + (one[1]-two[1])*(one[1]-two[1]));
+	return std::sqrt( ((one[0]-two[0])*(one[0]-two[0])) + ((one[1]-two[1])*(one[1]-two[1])));
 }

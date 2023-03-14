@@ -74,14 +74,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	BoundingBox b3(Vec2i(10,0));
 	BoundingBox b4(Vec2i(10,20));
 	BoundingBox b5(Vec2i(20,10));
+	BoundingBox b6(Vec2i(20,20));
 
-	std::cout << "b1b2: " << b1.getDistance(b2) << " / b1b3: " << b1.getDistance(b3) << " / b1b4: " << b1.getDistance(b4) << " / b1b5: " << b1.getDistance(b5) << std::endl;
+	std::cout << "b1b2: " << b1.getDistance(b2) << " / b1b3: " << b1.getDistance(b3) << " / b1b4: " << b1.getDistance(b4) << " / b1b5: " << b1.getDistance(b5) << " / b1b6: " << b1.getDistance(b6)  << std::endl;
 
 	boxes.push_back(b1);
 	boxes.push_back(b2);
 	boxes.push_back(b3);
 	boxes.push_back(b4);
 	boxes.push_back(b5);
+	boxes.push_back(b6);
 
 	manualUpdate();
 }
