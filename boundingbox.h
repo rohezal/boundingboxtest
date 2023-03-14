@@ -51,6 +51,8 @@ public:
 
 	float getMinimalDistanceToAllCorners(Vec2i point) const;
 	static inline float distance(Vec2i one, Vec2i two);
+	constexpr static float x_penalty = 1;
+	constexpr static float y_penalty = 1;
 
 };
 

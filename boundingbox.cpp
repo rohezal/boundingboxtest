@@ -165,5 +165,7 @@ float BoundingBox::getMinimalDistanceToAllCorners(Vec2i point) const
 
 float BoundingBox::distance(Vec2i one, Vec2i two)
 {
-	return std::sqrt( ((one[0]-two[0])*(one[0]-two[0])) + ((one[1]-two[1])*(one[1]-two[1])));
+	const float distance_y = (one[0]-two[0])*(one[0]-two[0]) * y_penalty;
+	const float distance_x = (one[1]-two[1])*(one[1]-two[1]) * x_penalty;
+	return std::sqrt( distance_y + distance_x );
 }
