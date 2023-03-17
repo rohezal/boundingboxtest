@@ -22,12 +22,16 @@ BoundingBox::BoundingBox(const Island &island) : BoundingBox()
 		const int x = pixel[1];
 		const int y = pixel[0];
 
-		minX = minX > x? x : minX;
-		minY = minY > y? y : minY;
+		minX = x < minX? x : minX;
+		minY = y < minY? y : minY;
 
-		minX = minX < x? x : minX;
-		minY = minY < y? y : minY;
+		maxX = x > maxX? x : maxX;
+		maxY = y > maxY? y : maxY;
 	}
+
+	maxX = (maxX-minX < 2) ? maxX+2 : maxX;
+	maxY = (maxY-minY < 2) ? maxY+2 : maxY;
+
 
 	lowerLeftCorner = Vec2i(minY,minX);
 	upperRightCorner = Vec2i(maxY,maxX);
@@ -56,6 +60,8 @@ void BoundingBox::draw(Mat &image) const
 	{
 		return;
 	}
+
+
 
 	Scalar line_Color(rand()%256, rand()%256, rand()%256);//Color of the line
 	Point ll(lowerLeftCorner[1],lowerLeftCorner[0]); //lower left

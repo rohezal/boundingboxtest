@@ -178,10 +178,31 @@ void MainWindow::manualUpdate()
 
 	calculateIslandImage(contrastImage,data);
 
+
+	if(islands.size() == 0)
+	{
+		Island::output_prefix = "/tmp/";
+		Mat hsvImage;
+		contrastImage.convertTo(hsvImage,CV_32F);
+
+		islands = calculateIslands(contrastImage,hsvImage);
+
+		boxes.clear();
+
+		for (size_t i = 0; i < islands.size();i++)
+		{
+			boxes.push_back(BoundingBox(islands[i]));
+			std::cout << i << ". [" << islands[i].getMinX() << "," << islands[i].getMaxX() << "]" << std::endl;
+		}
+		std::cout << "Number of Boxes " << boxes.size() << std::endl;
+	}
+
+
 	std::cout << "Labels: " << data.number_of_labels << std::endl;
 
 	contrastImageFilled = colorizeIslandImage(data.islandImage,data.number_of_labels);
 	combinedImage = contrastImageFilled.clone();
+
 
 	/*
 	String windowName = "The Guitar"; //Name of the window
@@ -192,9 +213,10 @@ void MainWindow::manualUpdate()
 
 	combinedImage = 0;
 
-	for(int i = 0; i < boxes.size(); i++)
+	for(size_t i = 0; i < boxes.size(); i++)
 	{
 		boxes[i].draw(combinedImage);
+		std::cout << boxes[i] << std::endl;
 	}
 
 

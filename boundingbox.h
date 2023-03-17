@@ -56,4 +56,11 @@ public:
 
 };
 
+inline std::ostream &operator<<(std::ostream &os, const BoundingBox &box)
+{
+   os << box.lowerLeftCorner << " " << box.upperRightCorner;
+   return os;
+}
+
+
 #endif // BOUNDINGBOX_H

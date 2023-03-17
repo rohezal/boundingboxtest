@@ -10,6 +10,7 @@
 #include <QClipboard>
 #include <crackdetection/islands.h>
 #include <boundingbox.h>
+#include <crackdetection/island.h>
 
 
 namespace Ui {
@@ -61,6 +62,7 @@ private:
 	float saved_preprocessing_treshold_divisor = 30;
 	float saved_preprocessing_treshold_adder = 0;
 	std::vector<BoundingBox> boxes;
+	std::vector<Island> islands;
 
 signals:
 	void triggerAutomaticUpdate();
