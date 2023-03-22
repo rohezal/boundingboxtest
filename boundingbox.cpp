@@ -8,7 +8,7 @@ BoundingBox::BoundingBox()
 	center = (lowerLeftCorner+upperRightCorner)/2;
 }
 
-BoundingBox::BoundingBox(const Island &island) : BoundingBox()
+BoundingBox::BoundingBox(Island &island) : BoundingBox()
 {
 	int minX = INT_MAX;
 	int maxX = INT_MIN;
@@ -38,6 +38,8 @@ BoundingBox::BoundingBox(const Island &island) : BoundingBox()
 	lowerLeftCorner = Vec2i(minY,minX);
 	upperRightCorner = Vec2i(maxY,maxX);
 	center = (lowerLeftCorner+upperRightCorner)/2;
+
+	islands.push_back(&island);
 
 
 
@@ -231,3 +233,5 @@ float BoundingBox::distance(Vec2i one, Vec2i two)
 	const float distance_x = (one[1]-two[1])*(one[1]-two[1]) * x_penalty;
 	return std::sqrt( distance_y + distance_x );
 }
+
+int BoundingBox::minDrawArea = 0;

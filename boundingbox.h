@@ -14,7 +14,7 @@ class BoundingBox
 {
 public:
 	BoundingBox();
-	BoundingBox(const Island& island);
+	BoundingBox(Island& island);
 	BoundingBox(const Vec2i ll, const Vec2i ur);
 	BoundingBox(const Vec2i center);
 
@@ -64,7 +64,4 @@ inline std::ostream &operator<<(std::ostream &os, const BoundingBox &box)
    os << box.lowerLeftCorner << " " << box.upperRightCorner;
    return os;
 }
-
-int BoundingBox::minDrawArea = 0;
-
 #endif // BOUNDINGBOX_H

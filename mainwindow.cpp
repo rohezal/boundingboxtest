@@ -211,14 +211,27 @@ void MainWindow::manualUpdate()
 	waitKey(0); // Wait for any keystroke in the window
 	*/
 
+
 	combinedImage = 0;
 
+	/*
 	for(size_t i = 0; i < boxes.size(); i++)
 	{
 		boxes[i].draw(combinedImage);
 		std::cout << boxes[i] << std::endl;
 	}
+	*/
 
+
+	boxes.front().draw(combinedImage);
+
+	std::vector<BoundingBox*> goodboxes = boxes.front().getGoodBoxes(boxes);
+
+	for(size_t i = 0; i < goodboxes.size(); i++)
+	{
+		goodboxes[i]->draw(combinedImage);
+		std::cout << *goodboxes[i] << std::endl;
+	}
 
 	imageviewerContrast->setPixMap(QPixmap::fromImage(QImage((unsigned char*) contrastImageFilled.data, contrastImageFilled.cols, contrastImageFilled.rows, QImage::Format_RGB888)));
 	imageviewerCombined->setPixMap(QPixmap::fromImage(QImage((unsigned char*) combinedImage.data, combinedImage.cols, combinedImage.rows, QImage::Format_RGB888)));
