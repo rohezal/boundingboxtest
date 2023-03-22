@@ -123,7 +123,8 @@ float BoundingBox::getDistance(const BoundingBox &other) const
 		return 0;
 	}
 
-	if(this->isInsideY(other) || other.isInsideY(*this) )
+	//if(this->isInsideY(other) || other.isInsideY(*this) )
+	if(false)
 	{
 		/*   y1
 		 *		<--------> distance x
@@ -134,7 +135,8 @@ float BoundingBox::getDistance(const BoundingBox &other) const
 		return getMinimumXDistance(other);
 	}
 
-	if(this->isInsideX(other) || other.isInsideX(*this) )
+	//if(this->isInsideX(other) || other.isInsideX(*this) )
+	if(false)
 	{
 		/*		distance y
 		 *		|
@@ -199,7 +201,8 @@ std::vector<BoundingBox *> BoundingBox::getGoodBoxes(std::vector<BoundingBox> &b
 	const size_t NUMBER_OF_BOXES = boxes.size();
 	for(size_t i = 0; i < NUMBER_OF_BOXES; i++)
 	{
-		if(getDistance(boxes[i]) < boxes[i].getIslandQuality())
+		const float distance = getDistance(boxes[i]);
+		if( (distance/2*std::sqrt(distance)) < boxes[i].getIslandQuality())
 		{
 			if(this != &boxes[i])
 			{
@@ -235,3 +238,6 @@ float BoundingBox::distance(Vec2i one, Vec2i two)
 }
 
 int BoundingBox::minDrawArea = 0;
+
+float BoundingBox::x_penalty = Island::factor_distance_in_x_direction_penality;
+float BoundingBox::y_penalty = Island::factor_distance_in_y_direction_penality;

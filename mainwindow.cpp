@@ -222,16 +222,32 @@ void MainWindow::manualUpdate()
 	}
 	*/
 
+	BoundingBox* best_box = 0;
 
-	boxes.front().draw(combinedImage);
+	int best_quality = -1;
 
-	std::vector<BoundingBox*> goodboxes = boxes.front().getGoodBoxes(boxes);
+	for(size_t i = 0; i < boxes.size(); i++)
+	{
+		if(boxes[i].getIslandQuality() > best_quality)
+		{
+			best_quality = boxes[i].getIslandQuality();
+			best_box = &boxes[i];
+		}
+	}
+
+	assert (best_box != 0);
+
+	best_box->draw(combinedImage);
+
+	std::vector<BoundingBox*> goodboxes = best_box->getGoodBoxes(boxes);
 
 	for(size_t i = 0; i < goodboxes.size(); i++)
 	{
 		goodboxes[i]->draw(combinedImage);
 		std::cout << *goodboxes[i] << std::endl;
 	}
+
+	std::cout << "ypenalty: " << BoundingBox::y_penalty << " xpenalty:" << BoundingBox::x_penalty << std::endl;
 
 	imageviewerContrast->setPixMap(QPixmap::fromImage(QImage((unsigned char*) contrastImageFilled.data, contrastImageFilled.cols, contrastImageFilled.rows, QImage::Format_RGB888)));
 	imageviewerCombined->setPixMap(QPixmap::fromImage(QImage((unsigned char*) combinedImage.data, combinedImage.cols, combinedImage.rows, QImage::Format_RGB888)));

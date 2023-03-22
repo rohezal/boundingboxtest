@@ -12,7 +12,6 @@
 #include <boundingbox.h>
 #include <crackdetection/island.h>
 
-
 namespace Ui {
 class MainWindow;
 }
