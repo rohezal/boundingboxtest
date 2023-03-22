@@ -145,10 +145,10 @@ float BoundingBox::getDistance(const BoundingBox &other) const
 		return getMinimumYDistance(other);
 	}
 
-	const Vec2i ll(lowerLeftCorner[1],lowerLeftCorner[0]); //lower left
-	const Vec2i ul(upperRightCorner[1],lowerLeftCorner[0]); //lower right
-	const Vec2i ur(upperRightCorner[1],upperRightCorner[0]); // upper right
-	const Vec2i lr(lowerLeftCorner[1],upperRightCorner[0]); //lower right
+	const Vec2i ll(lowerLeftCorner[0],lowerLeftCorner[1]); //lower left
+	const Vec2i ul(upperRightCorner[0],lowerLeftCorner[1]); //lower right
+	const Vec2i ur(upperRightCorner[0],upperRightCorner[1]); // upper right
+	const Vec2i lr(lowerLeftCorner[0],upperRightCorner[1]); //lower right
 
 	const float d1 = other.getMinimalDistanceToAllCorners(ll);
 	const float d2 = other.getMinimalDistanceToAllCorners(ul);
@@ -214,10 +214,10 @@ std::vector<BoundingBox *> BoundingBox::getGoodBoxes(std::vector<BoundingBox> &b
 
 float BoundingBox::getMinimalDistanceToAllCorners(Vec2i point) const
 {
-	const Vec2i ll(lowerLeftCorner[1],lowerLeftCorner[0]); //lower left
-	const Vec2i ul(upperRightCorner[1],lowerLeftCorner[0]); //lower right
-	const Vec2i ur(upperRightCorner[1],upperRightCorner[0]); // upper right
-	const Vec2i lr(lowerLeftCorner[1],upperRightCorner[0]); //lower right
+	const Vec2i ll(lowerLeftCorner[0],lowerLeftCorner[1]); //lower left
+	const Vec2i ul(upperRightCorner[0],lowerLeftCorner[1]); //lower right
+	const Vec2i ur(upperRightCorner[0],upperRightCorner[1]); // upper right
+	const Vec2i lr(lowerLeftCorner[0],upperRightCorner[1]); //lower right
 
 	const float d1 = distance(ll,point);
 	const float d2 = distance(ul,point);
