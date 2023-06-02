@@ -36,12 +36,14 @@ SOURCES += \
         imageviewer.cpp \
         main.cpp \
         mainwindow.cpp \
-    boundingbox.cpp
+    boundingbox.cpp \
+    quadtree.cpp
 
 HEADERS += \
         imageviewer.h \
         mainwindow.h \
-    boundingbox.h
+    boundingbox.h \
+    quadtree.h
 
 FORMS += \
         imageviewer.ui \
