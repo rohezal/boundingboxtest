@@ -241,3 +241,8 @@ int BoundingBox::minDrawArea = 0;
 
 float BoundingBox::x_penalty = Island::factor_distance_in_x_direction_penality;
 float BoundingBox::y_penalty = Island::factor_distance_in_y_direction_penality;
+
+bool BoundingBox::isInBetween(const Vec2i point) const
+{
+		return isInBetweenY(point[0]) && isInBetweenX(point[1]);
+}

@@ -36,6 +36,9 @@ public:
 
 	bool isInsideY(const BoundingBox &other) const;
 	bool isInsideX(const BoundingBox &other) const;
+
+	bool isInBetween(const Vec2i point) const;
+
 	inline bool isInBetweenX(const int x) const
 	{
 		return x >= lowerLeftCorner[1] && x <= upperRightCorner[1];
@@ -61,7 +64,7 @@ public:
 
 inline std::ostream &operator<<(std::ostream &os, const BoundingBox &box)
 {
-   os << box.lowerLeftCorner << " " << box.upperRightCorner;
+	os << box.lowerLeftCorner << " " << box.upperRightCorner;
    return os;
 }
 #endif // BOUNDINGBOX_H

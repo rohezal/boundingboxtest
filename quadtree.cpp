@@ -1,20 +1,21 @@
 #include "quadtree.h"
 
-Quadtree::Quadtree(BoundingBox dims, Quadtree *parent, std::set<Island> *islands, int level)
+cv::Mat* Quadtree::image = nullptr;
+
+Quadtree::Quadtree(BoundingBox dims, Quadtree *_parent, std::set<const Island*> &_islands, size_t _level) : box(dims)
 {
 	nodes[0] = nullptr;
 	nodes[1] = nullptr;
 	nodes[2] = nullptr;
 	nodes[3] = nullptr;
 
-    this->parent = parent;
+	this->parent = _parent;
+	this->level = _level;
+	this->islands = _islands;
 
-    this->level = level;
-
-    this->islands = islands;
-
-    if(islands->size() > 4 && level < 10)
+	if(_islands.size() > MIN_ELEMENTS && _level < MAX_LEVEL)
     {
+		std::cout << this <<  " | Level: " << _level << std::endl;
         //[0] is y, 0,0 is upper left corner
         Vec2i upperLeftCorner (dims.upperRightCorner[0], dims.lowerLeftCorner[1]);
         Vec2i lowerRightCorner (dims.lowerLeftCorner[0], dims.upperRightCorner[1]);
@@ -37,33 +38,91 @@ Quadtree::Quadtree(BoundingBox dims, Quadtree *parent, std::set<Island> *islands
         BoundingBox ur = BoundingBox(centerBox,dims.upperRightCorner); //upper right
         BoundingBox lr = BoundingBox(centerLowerEdge,centerRightEdge); //lower right
 
-        std::set<Island> *isUL;
-        std::set<Island> *isLL;
-        std::set<Island> *isUR;
-        std::set<Island> *isLR;
+		std::set<const Island*> isUL;
+		std::set<const Island*> isLL;
+		std::set<const Island*> isUR;
+		std::set<const Island*> isLR;
 
-        for(size_t i = 0; i < islands->size(); i++){
-            for(size_t j = 0; j < islands->at(i).pixels.size(); j++)
+		for(std::set<const Island*>::iterator it = islands.begin(); it != islands.end(); it++)
+		{
+			for(size_t j = 0; j < (*it)->pixels.size(); j++)
             {
-                if(ul.isInBetweenY(islands->at(i).pixels.at(j)[0]) && ul.isInBetweenX(islands->at(i).pixels.at(j)[1])) {
-                    isUL->insert(islands->at(i));
+				const Vec2i point = (*it)->pixels.at(j);
+				const Island* island = *it;
+
+				if(ul.isInBetween(point))
+				{
+					isUL.insert(island);
+				}
+				if(ll.isInBetween(point))
+				{
+					isLL.insert(island);
                 }
-                if(ll.isInBetweenY(islands->at(i).pixels.at(j)[0]) && ll.isInBetweenX(islands->at(i).pixels.at(j)[1])) {
-                    isLL->insert(islands->at(i));
+				if(ur.isInBetween(point))
+				{
+					isUR.insert(island);
                 }
-                if(ur.isInBetweenY(islands->at(i).pixels.at(j)[0]) && ur.isInBetweenX(islands->at(i).pixels.at(j)[1])) {
-                    isUR->insert(islands->at(i));
-                }
-                if(lr.isInBetweenY(islands->at(i).pixels.at(j)[0]) && lr.isInBetweenX(islands->at(i).pixels.at(j)[1])) {
-                    isLR->insert(islands->at(i));
+				if(lr.isInBetween(point))
+				{
+					isLR.insert(island);
                 }
             }
         }
 
-        nodes[0] = Quadtree(ul, this, isUL, level+1);
-        nodes[1] = Quadtree(ul, this, isUL, level+1);
-        nodes[2] = Quadtree(ul, this, isUL, level+1);
-        nodes[3] = Quadtree(ul, this, isUL, level+1);
-    }
+		if(isUL.size() > 0)
+		{
+			nodes[0] = new Quadtree(ul, this, isUL, _level+1);
+		}
 
+		if(isLL.size() > 0)
+		{
+			nodes[1] = new Quadtree(ll, this, isLL, _level+1);
+		}
+
+		if(isUR.size() > 0)
+		{
+			nodes[2] = new Quadtree(ur, this, isUR, _level+1);
+		}
+
+		if(isLR.size() > 0)
+		{
+			nodes[3] = new Quadtree(lr, this, isLR, _level+1);
+		}
+	}
+}
+
+void Quadtree::draw(int _level)
+{
+	if(_level == -1)
+	{
+		if(image != nullptr)
+		{
+			box.draw(*image);
+
+			if(nodes[0] != nullptr)
+			{
+				nodes[0]->draw(_level);
+			}
+			if(nodes[1] != nullptr)
+			{
+				nodes[1]->draw(_level);
+			}
+			if(nodes[2] != nullptr)
+			{
+				nodes[2]->draw(_level);
+			}
+			if(nodes[3] != nullptr)
+			{
+				nodes[3]->draw(_level);
+			}
+		}
+	}
+
+	if(_level == level)
+	{
+		if(image != nullptr)
+		{
+			box.draw(*image);
+		}
+	}
 }

@@ -189,12 +189,23 @@ void MainWindow::manualUpdate()
 
 		boxes.clear();
 
+		std::set<const Island*> island_set;
+
+
+
 		for (size_t i = 0; i < islands.size();i++)
 		{
 			boxes.push_back(BoundingBox(islands[i]));
 			std::cout << i << ". [" << islands[i].getMinX() << "," << islands[i].getMaxX() << "]" << std::endl;
+			island_set.insert(&islands[i]);
+
 		}
 		std::cout << "Number of Boxes " << boxes.size() << std::endl;
+
+		std::cout << "Building Quadtree with #islands: " << island_set.size() << std::endl;
+		BoundingBox complete_image(Vec2i(0,0), Vec2i(hsvImage.rows, hsvImage.cols));
+
+		tree = new Quadtree(complete_image,NULL,island_set);
 	}
 
 
@@ -248,6 +259,15 @@ void MainWindow::manualUpdate()
 	}
 
 	std::cout << "ypenalty: " << BoundingBox::y_penalty << " xpenalty:" << BoundingBox::x_penalty << std::endl;
+
+
+	if(Quadtree::image == nullptr)
+	{
+		Quadtree::setImage(contrastImageFilled);
+		tree->draw();
+
+	}
+
 
 	imageviewerContrast->setPixMap(QPixmap::fromImage(QImage((unsigned char*) contrastImageFilled.data, contrastImageFilled.cols, contrastImageFilled.rows, QImage::Format_RGB888)));
 	imageviewerCombined->setPixMap(QPixmap::fromImage(QImage((unsigned char*) combinedImage.data, combinedImage.cols, combinedImage.rows, QImage::Format_RGB888)));
