@@ -1,6 +1,9 @@
 #include "quadtree.h"
 
 cv::Mat* Quadtree::image = nullptr;
+std::map<const Island*, BoundingBox*> Quadtree::islandToBoundingBoxLookup;
+std::map<const Island*, std::vector<Quadtree*> > Quadtree::islandToQuadtreeVectorLookup;
+
 
 Quadtree::Quadtree(BoundingBox dims, Quadtree *_parent, std::set<const Island*> &_islands, size_t _level) : box(dims)
 {
@@ -33,10 +36,20 @@ Quadtree::Quadtree(BoundingBox dims, Quadtree *_parent, std::set<const Island*> 
         Vec2i centerLowerEdge(lowerRightCorner[0],centerX);
         Vec2i centerRightEdge(centerY,lowerRightCorner[1]);
 
-        BoundingBox ul = BoundingBox(centerLeftEdge,centerTopEdge); //upper left
+
+		//Unoverlapping points
+
+		Vec2i centerBoxMovedTopRight(centerY+1,centerX+1);
+		Vec2i centerLeftEdgeMovedTop(centerY+1,upperLeftCorner[1]);
+		Vec2i centerLowerEdgeMovedRight(lowerRightCorner[0],centerX+1);
+
+
+
+
+		BoundingBox ul = BoundingBox(centerLeftEdgeMovedTop,centerTopEdge); //upper left
         BoundingBox ll = BoundingBox(dims.lowerLeftCorner,centerBox); //lower left
-        BoundingBox ur = BoundingBox(centerBox,dims.upperRightCorner); //upper right
-        BoundingBox lr = BoundingBox(centerLowerEdge,centerRightEdge); //lower right
+		BoundingBox ur = BoundingBox(centerBoxMovedTopRight,dims.upperRightCorner); //upper right
+		BoundingBox lr = BoundingBox(centerLowerEdgeMovedRight,centerRightEdge); //lower right
 
 		std::set<const Island*> isUL;
 		std::set<const Island*> isLL;
@@ -88,6 +101,14 @@ Quadtree::Quadtree(BoundingBox dims, Quadtree *_parent, std::set<const Island*> 
 		{
 			nodes[3] = new Quadtree(lr, this, isLR, _level+1);
 		}
+
+		if(isLeaf())
+		{
+			for(std::set<const Island*>::iterator it = islands.begin(); it != islands.end(); it++)
+			{
+				islandToQuadtreeVectorLookup[*it].push_back(this);
+			}
+		}
 	}
 }
 
@@ -97,8 +118,10 @@ void Quadtree::draw(int _level)
 	{
 		if(image != nullptr)
 		{
-			box.draw(*image);
-
+			if(isLeaf())
+			{
+				box.draw(*image);
+			}
 			if(nodes[0] != nullptr)
 			{
 				nodes[0]->draw(_level);
@@ -125,4 +148,79 @@ void Quadtree::draw(int _level)
 			box.draw(*image);
 		}
 	}
+}
+
+bool Quadtree::containsPixel(const Vec2i pixel) const
+{
+	return box.contains(pixel);
+}
+
+Quadtree *Quadtree::getCellOfPixel(Vec2i pixel)
+{
+	if(box.contains(pixel))
+	{
+		for(int i = 0; i < NUMBER_OF_NODES; i++)
+		{
+			if(nodes[i])
+			{
+				if(nodes[i]->containsPixel(pixel))
+				{
+					return(nodes[i]->getCellOfPixel(pixel));
+				}
+			}
+		}
+		return this;
+	}
+	return nullptr;
+}
+
+std::pair<const Island*, float>  Quadtree::getFirstEstimate(Island* _island, const Vec2i pixel)
+{
+	//get the islands in the cell and the parent node
+	Quadtree* cell = getCellOfPixel(pixel);
+
+	std::vector<const Island*> candidates;
+
+	std::set<const Island*>::iterator it;
+
+	std::pair<const Island*, float> result;
+	result.first = nullptr;
+	result.second = std::numeric_limits<float>::max();
+
+	for(it = cell->islands.begin(); it != cell->islands.end(); it++)
+	{
+		if(*it != _island)
+		{
+			candidates.push_back(*it);
+		}
+	}
+
+	if(candidates.size() == 0)
+	{
+		if(this->hasParent())
+		{
+			return parent->getFirstEstimate(_island,pixel);
+		}
+	}
+
+	for(size_t i = 0; i < candidates.size(); i++)
+	{
+		const float distance = _island->calculateDistanceFromIsland(*candidates[i]);
+
+		if(distance < result.second)
+		{
+			result.second =distance;
+			result.first = candidates[i];
+		}
+
+	}
+
+	return result;
+}
+
+std::vector<const Island *> Quadtree::getCandidates(Island *_island)
+{
+	std::vector<const Island*> result;
+
+	return result;
 }

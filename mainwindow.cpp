@@ -191,14 +191,12 @@ void MainWindow::manualUpdate()
 
 		std::set<const Island*> island_set;
 
-
-
 		for (size_t i = 0; i < islands.size();i++)
 		{
 			boxes.push_back(BoundingBox(islands[i]));
 			std::cout << i << ". [" << islands[i].getMinX() << "," << islands[i].getMaxX() << "]" << std::endl;
 			island_set.insert(&islands[i]);
-
+			Quadtree::islandToBoundingBoxLookup[&islands[i]] = &boxes.back();
 		}
 		std::cout << "Number of Boxes " << boxes.size() << std::endl;
 
@@ -206,6 +204,11 @@ void MainWindow::manualUpdate()
 		BoundingBox complete_image(Vec2i(0,0), Vec2i(hsvImage.rows, hsvImage.cols));
 
 		tree = new Quadtree(complete_image,NULL,island_set);
+		std::cout << *tree->getCellOfPixel(Vec2i(10,10)) << std::endl;
+
+		std::pair<const Island*, float> first_estimate = tree->getFirstEstimate(&islands.front(),islands.front().getMostRightPixel());
+
+		std::cout << first_estimate.first << " | " << first_estimate.second << std::endl;
 	}
 
 

@@ -230,6 +230,21 @@ float BoundingBox::getMinimalDistanceToAllCorners(Vec2i point) const
 	return std::min( std::min( std::min(d1,d2), d3), d4);
 }
 
+float BoundingBox::getMaximumDistanceToAllCorners(Vec2i point) const
+{
+	const Vec2i ll(lowerLeftCorner[0],lowerLeftCorner[1]); //lower left
+	const Vec2i ul(upperRightCorner[0],lowerLeftCorner[1]); //lower right
+	const Vec2i ur(upperRightCorner[0],upperRightCorner[1]); // upper right
+	const Vec2i lr(lowerLeftCorner[0],upperRightCorner[1]); //lower right
+
+	const float d1 = distance(ll,point);
+	const float d2 = distance(ul,point);
+	const float d3 = distance(ur,point);
+	const float d4 = distance(lr,point);
+
+	return std::max( std::max( std::max(d1,d2), d3), d4);
+}
+
 float BoundingBox::distance(Vec2i one, Vec2i two)
 {
 	const float distance_y = (one[0]-two[0])*(one[0]-two[0]) * y_penalty;
@@ -244,5 +259,10 @@ float BoundingBox::y_penalty = Island::factor_distance_in_y_direction_penality;
 
 bool BoundingBox::isInBetween(const Vec2i point) const
 {
-		return isInBetweenY(point[0]) && isInBetweenX(point[1]);
+	return isInBetweenY(point[0]) && isInBetweenX(point[1]);
+}
+
+bool BoundingBox::contains(const Vec2i point) const
+{
+	return isInBetween(point);
 }

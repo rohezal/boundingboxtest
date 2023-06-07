@@ -39,6 +39,8 @@ public:
 
 	bool isInBetween(const Vec2i point) const;
 
+	bool contains(const Vec2i point) const;
+
 	inline bool isInBetweenX(const int x) const
 	{
 		return x >= lowerLeftCorner[1] && x <= upperRightCorner[1];
@@ -57,6 +59,7 @@ public:
 	std::vector<BoundingBox*> getGoodBoxes(std::vector<BoundingBox>& boxes) const;
 
 	float getMinimalDistanceToAllCorners(Vec2i point) const;
+	float getMaximumDistanceToAllCorners(Vec2i point) const;
 	static inline float distance(Vec2i one, Vec2i two);
 	static float x_penalty;
 	static float y_penalty;
